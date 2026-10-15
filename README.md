@@ -28,6 +28,9 @@ portfolio/
 Edit `js/config.js`. The name, availability, hero lines, email, LinkedIn, GitHub, resume, bio, experience, skills and education all come from there. Empty LinkedIn/GitHub/resume values show a hint instead of a dead link.
 The page `<title>` and meta description in `index.html` are static; edit them too if your name changes.
 
+## Images
+The eight SVG files in `assets/images/` are generic illustrations (laptop, dashboard, kanban board, flowchart, warehouse, desk, phone, SQL), not real product screenshots. Swap them for your own work or photos. For the About photo, edit `about.photo` in `js/config.js`.
+
 ## Replace project images
 1. Put the file in `assets/images/`, e.g. `wms-hero.jpg`.
 2. In `js/projects.js`, set `image: "assets/images/wms-hero.jpg"` and `imageAlt: "Describe the image"`.
@@ -38,7 +41,7 @@ Use relative paths with no leading `/`. Empty values show a labelled placeholder
 Each project is one `tpl({...})` entry in `js/projects.js`. Copy one, give it a unique `id`, edit the text. Delete an entry to remove it. The sample projects are concepts, not finished case studies; replace the text with your real work and only add outcomes you can verify.
 
 ## Colors and fonts
-Edit the variables at the top of `css/style.css` (`--bg`, `--fg`, `--mute`, `--acc`, `--h`, `--b`). Fonts load from Google Fonts in `index.html` with system-font fallbacks; to change them, edit the `<link>` and the `--h` / `--b` variables.
+Edit the variables at the top of `css/style.css` (`--paper`, `--ink`, `--coral`, `--mustard`, `--teal`, `--lilac`, and the fonts `--h`, `--b`, `--hand`). Section colors are the `.c-teal`, `.c-coral`, `.c-mustard` and `.c-lilac` classes, assigned per section in `js/main.js`. Fonts load from Google Fonts in `index.html` with system-font fallbacks; to change them, edit the `<link>` and the `--h` / `--b` variables.
 
 ## Run locally
 Open `index.html` in a browser, or run a local server:

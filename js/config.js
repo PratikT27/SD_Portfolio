@@ -6,8 +6,10 @@ window.SITE_CONFIG = {
     lines: ["Designing", "digital", "experiences."],
     roles: "UI/UX Designer · Product Thinker · Problem Solver",
     tagline: "I turn complex ideas into clear, intuitive, and meaningful digital experiences.",
-    cta: "Explore my work ↓"
+    cta: "Explore my work ↓",
+    note: "UI/UX in the making ✎"
   },
+  marquee: ["UI/UX", "Product thinking", "Workflow design", "Systems", "SQL & data", "Problem solving", "Prototyping"],
   closing: "Let's make something meaningful.",
   email: "your.email@example.com",            // replace
   linkedin: "",                               // e.g. "https://www.linkedin.com/in/your-handle"
@@ -15,7 +17,8 @@ window.SITE_CONFIG = {
   resume: "",                                 // e.g. "assets/Pratik-Tambe-Resume.pdf"
   contactCta: "Open to select design and product collaborations. Tell me what you are building.",
   about: {
-    photo: "",                                // e.g. "assets/images/profile.jpg"
+    photo: "assets/images/desk.svg",          // replace with e.g. "assets/images/profile.jpg"
+    photoAlt: "Illustration of a desk with a laptop, notebook and coffee. Replace with your photo.",
     intro: "I'm a Senior System Analyst at Medline India, moving toward and showcasing UI/UX and digital product design.",
     paragraphs: [
       "My background is in business analysis, systems analysis, operations and problem management. Day to day I untangle workflows, gather requirements and find root causes across ERP, WMS and integration landscapes.",

@@ -44,15 +44,38 @@
   host.innerHTML = SECTIONS.map((s) => `<section class="panel" id="s-${s.id}"><h2><button class="panel-head" aria-expanded="false" aria-controls="b-${s.id}"><span class="t">${s.title}</span><span class="d">${s.desc}</span><span class="pm" aria-hidden="true">+</span></button></h2><div class="panel-body" id="b-${s.id}" role="region" aria-label="${s.title}" inert><div class="panel-inner">${s.render()}</div></div></section>`).join("");
 
   /* ---- expand / collapse (one at a time) ---- */
+  const REDUCED = matchMedia("(prefers-reduced-motion: reduce)");
+  const EASE = "cubic-bezier(.2,.7,.2,1)";
   function setOpen(panel, open) {
+    if (panel.classList.contains("open") === open) return;
+    const body = $(".panel-body", panel), inner = $(".panel-inner", panel);
+    const from = body.offsetHeight, op = +getComputedStyle(body).opacity;
+    body.getAnimations().forEach((x) => x.cancel());
     panel.classList.toggle("open", open);
     $(".panel-head", panel).setAttribute("aria-expanded", open);
-    $(".panel-body", panel).inert = !open;
+    body.inert = !open;
+    const to = body.offsetHeight;
+    if (REDUCED.matches || from === to) return;
+    body.animate([{ height: from + "px", opacity: op }, { height: to + "px", opacity: open ? 1 : 0 }], { duration: open ? 700 : 550, easing: EASE });
+    if (open) inner.animate([{ transform: "translateY(20px)" }, { transform: "none" }], { duration: 700, easing: EASE });
   }
-  function openSection(id, scroll = true) {
+  let follow = 0;
+  function followTo(el) {
+    cancelAnimationFrame(follow);
+    const navH = $("#nav").offsetHeight, t0 = performance.now();
+    const stop = () => cancelAnimationFrame(follow);
+    ["wheel", "touchstart", "keydown"].forEach((ev) => addEventListener(ev, stop, { once: true, passive: true }));
+    const tick = (t) => {
+      const d = el.getBoundingClientRect().top - navH;
+      window.scrollBy({ top: d * 0.14, behavior: "instant" });
+      if (t - t0 < 900 && Math.abs(d) > 1) follow = requestAnimationFrame(tick);
+    };
+    follow = requestAnimationFrame(tick);
+  }
+  function openSection(id) {
     const target = $("#s-" + id), was = target.classList.contains("open");
     $$(".panel").forEach((p) => setOpen(p, p === target && !was));
-    if (!was && scroll) setTimeout(() => target.scrollIntoView({ block: "start" }), 60);
+    if (!was) { if (REDUCED.matches) target.scrollIntoView(); else followTo(target); }
   }
   $$(".panel-head").forEach((b) => b.addEventListener("click", () => openSection(b.closest(".panel").id.slice(2))));
   $$("[data-open]").forEach((b) => b.addEventListener("click", () => {
@@ -67,6 +90,18 @@
     r.addEventListener("scroll", upd, { passive: true }); window.addEventListener("resize", upd); upd();
     [prev, next].forEach((b) => b.addEventListener("click", () => r.scrollBy({ left: +b.dataset.dir * Math.min(440, r.clientWidth * 0.8), behavior: "smooth" })));
     r.addEventListener("keydown", (e) => { if (e.key === "ArrowRight") r.scrollBy({ left: 300, behavior: "smooth" }); if (e.key === "ArrowLeft") r.scrollBy({ left: -300, behavior: "smooth" }); });
+    let tgt = 0, raf = 0, idle = 0;
+    const step = () => { const diff = tgt - r.scrollLeft; if (Math.abs(diff) < 0.5) { r.scrollLeft = tgt; raf = 0; return; } r.scrollLeft += diff * 0.2; raf = requestAnimationFrame(step); };
+    r.addEventListener("wheel", (e) => {
+      if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      const max = r.scrollWidth - r.clientWidth, d = e.deltaY * (e.deltaMode === 1 ? 32 : 1);
+      if (max <= 0 || (d > 0 && r.scrollLeft >= max - 1) || (d < 0 && r.scrollLeft <= 1)) return;
+      e.preventDefault();
+      if (!raf) tgt = r.scrollLeft;
+      tgt = Math.max(0, Math.min(max, tgt + d));
+      r.classList.add("wheel"); clearTimeout(idle); idle = setTimeout(() => r.classList.remove("wheel"), 250);
+      if (!raf) raf = requestAnimationFrame(step);
+    }, { passive: false });
     let down = false, moved = false, sx = 0, sl = 0;
     r.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") return; down = true; moved = false; sx = e.clientX; sl = r.scrollLeft; });
     window.addEventListener("pointermove", (e) => { if (!down) return; const dx = e.clientX - sx; if (Math.abs(dx) > 5) { moved = true; r.classList.add("drag"); } if (moved) r.scrollLeft = sl - dx; });
@@ -74,7 +109,7 @@
     r.addEventListener("click", (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
   });
   /* panel bodies are measured when opened, so refresh arrows then */
-  $$(".panel-head").forEach((h) => h.addEventListener("click", () => setTimeout(() => window.dispatchEvent(new Event("resize")), 650)));
+  $$(".panel-head").forEach((h) => h.addEventListener("click", () => setTimeout(() => window.dispatchEvent(new Event("resize")), 750)));
 
   /* ---- project case study dialog ---- */
   const dlg = $("#case");

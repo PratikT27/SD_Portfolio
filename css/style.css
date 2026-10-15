@@ -30,12 +30,12 @@ a{color:inherit}button{font:inherit;color:inherit;background:none;border:0;curso
 .panel-head .pm{width:44px;height:44px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-size:1.4rem;transition:transform .5s var(--ease),background .3s,color .3s}
 .panel-head:hover .t{transform:translateX(10px)}
 .panel.open .t{color:var(--acc)}.panel.open .pm{transform:rotate(45deg);background:var(--acc);color:#000;border-color:var(--acc)}
-.panel-body{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .6s var(--ease),opacity .4s}
-.panel.open .panel-body{grid-template-rows:1fr;opacity:1}
-.panel-inner{overflow:hidden;min-height:0}
+.panel-body{height:0;opacity:0;overflow:hidden}
+.panel.open .panel-body{height:auto;opacity:1}
+.panel-inner{will-change:transform}
 .rail-wrap{position:relative;padding-bottom:28px}
 .rail{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x proximity;padding:8px var(--pad) 16px;scrollbar-width:none;overscroll-behavior-x:contain;cursor:grab}
-.rail::-webkit-scrollbar{display:none}.rail.drag{scroll-snap-type:none;cursor:grabbing;user-select:none}
+.rail::-webkit-scrollbar{display:none}.rail.wheel{scroll-snap-type:none}.rail.drag{scroll-snap-type:none;cursor:grabbing;user-select:none}
 .rail-wrap::after{content:"";position:absolute;top:0;right:0;bottom:28px;width:70px;background:linear-gradient(90deg,transparent,#101013);pointer-events:none;transition:opacity .3s}
 .rail-wrap.end::after{opacity:0}
 .rail-ui{display:flex;gap:10px;align-items:center;padding:0 var(--pad);font-size:.75rem;color:var(--mute)}
